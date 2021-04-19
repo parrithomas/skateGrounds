@@ -1,11 +1,39 @@
 <% layout('/layouts/boilerplate')%>
-    <h1><%= skateground.title %></h1>
-    <h2> <%= skateground.location %>  </h2>
-    <img src="<%= skateground.image %>" alt="Skatepark">
-    <p><%= skateground.description %></p>
-    
-    <a href="/skategrounds/<%=skateground._id%>/edit">Edit <%=skateground.title%></a>
-    <form action="/skategrounds/<%=skateground._id%>?_method=DELETE" method="POST"><button class="btn btn-warning" type="submit">Delete <%=skateground.title%></button></form>
-    <footer>
-        <a href="/skategrounds">All Skategrounds</a>
-    </footer>
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="card mb-3">
+      <img
+        src="<%= skateground.image %>"
+        class="card-img-top"
+        alt="SkateGround"
+      />
+      <div class="card-body">
+        <h5 class="card-title"><%= skateground.title %></h5>
+        <h6 class="card-title text-muted"><%= skateground.location %></h6>
+        <p class="card-text"><%= skateground.description %></p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">Price: <%= skateground.price %></li>
+      </ul>
+      <div class="card-body">
+        <a
+          href="/skategrounds/<%=skateground._id%>/edit"
+          class="btn btn-secondary text-nowrap mx-1"
+          >Edit <%=skateground.title%></a
+        >
+        <form
+          class="d-inline"
+          action="/skategrounds/<%=skateground._id%>?_method=DELETE"
+          method="POST"
+        >
+          <button class="btn btn-danger text-nowrap mx-1" type="submit">
+            Delete <%=skateground.title%>
+          </button>
+        </form>
+      </div>
+      <div class="card-footer">
+        <div class="text-muted">Updated: 2 days ago</div>
+      </div>
+    </div>
+  </div>
+</div>

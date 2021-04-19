@@ -20,10 +20,9 @@ const seedDB = async () => {
         const skate = new Skateground({
             location: `${cities[random1000].city}, ${cities[random1000].state}`,
             title: `${sample(descriptors)} ${sample(places)}`,
-            image: 'https://source.unsplash.com/featured/?skatepark',
+            image: 'https://source.unsplash.com/collection/861827/1600x900',
             description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse viverra a tortor ac maximus. Nunc vel rhoncus dolor. In molestie accumsan metus, sit amet varius velit posuere fringilla. Vestibulum commodo lorem et mauris tincidunt, id commodo orci eleifend. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse viverra nisl tempus, euismod eros quis, rutrum nisi. Integer vestibulum commodo tortor.",
             price: 0.00
-
         })
         await skate.save();
     }

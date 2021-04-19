@@ -1,15 +1,56 @@
 <% layout('/layouts/boilerplate')%>
-    <h1>Add a new skateground</h1>
+<div class="row">
+  <h1 class="text-center">New SkateGround</h1>
+  <div class="col-6 offset-3">
     <form action="/skategrounds" method="POST">
-        <div>
-            <label for="skateground[title]">Title</label>
-            <input type="text" name="skateground[title]">
-        </div>    
-        <div>
-            <label for="skateground[location]">Location</label>
-            <input type="text" name="skateground[location]">
+      <div class="mb-3">
+        <label class="form-label" for="skateground[title]">Title</label>
+        <input class="form-control" type="text" name="skateground[title]" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="skateground[location]">Location</label>
+        <input class="form-control" type="text" name="skateground[location]" />
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="skateground[location]"
+          >Description</label
+        >
+        <textarea
+          class="form-control"
+          rows="4"
+          id="description"
+          name="skateground[description]"
+        ></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="skateground[image]" class="form-label">Image URL</label>
+        <input
+          class="form-control"
+          type="text"
+          id="image"
+          name="skateground[image]"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="price" class="form-label" id="price-label">Price</label>
+        <div class="input-group">
+          <span class="input-group-text">£$€</span>
+          <input
+            class="form-control"
+            type="number"
+            name="skateground[price]"
+            id="price"
+            aria-describedby="price-label"
+            placeholder="0.00"
+            step=".01"
+            min="0"
+          />
         </div>
-    
-    <button type="submit">Add skateground</button>
+      </div>
+      <div class="mb-3">
+        <button class="btn btn-success" type="submit">Add skateground</button>
+      </div>
     </form>
-    <a href="/skategrounds">All Skategrounds</a>
+  </div>
+</div>

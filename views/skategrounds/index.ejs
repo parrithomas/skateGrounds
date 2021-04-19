@@ -1,8 +1,22 @@
 <% layout('/layouts/boilerplate')%>
-    <h1>All Skategrounds</h1>
-    <a href="/skategrounds/new">Add Skateground</a>
-    <ul>
-    <% for (skateground of skategrounds){ %> 
-        <li><a href="/skategrounds/<%= skateground._id %>"><%= skateground.title %></a> - <%= skateground.location %> </li>
-    <% } %> 
-</ul>
+<h1>All Skategrounds</h1>
+<a class="btn btn-success mb-3" href="/skategrounds/new">Add Skateground</a>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-3">
+  <% for (skateground of skategrounds){ %>
+
+  <div class="col">
+    <div class="card h-100">
+      <img src="<%= skateground.image%>" class="card-img-top" alt="skatepark" />
+      <div class="card-body">
+        <h5 class="card-title"><%=skateground.title%></h5>
+
+        <h6 class="card-subtitle mb-2 text-muted"><%=skateground.location%></h6>
+        <a href="/skategrounds/<%= skateground._id %>" class="btn btn-primary"
+          >Skate it</a
+        >
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>
