@@ -5,6 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 const Skateground = require('./models/skateground')
 const methodOverride = require('method-override')
+const ejsMate = require('ejs-mate')
 
 // SETUP MONGOOSE
 mongoose.connect('mongodb://localhost:27017/skateGround', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
@@ -17,6 +18,7 @@ db.once('open', () => {
 })
 
 // SETUP EJS AND MIDDLEWARE
+app.engine('ejs', ejsMate);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))

@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Skateground</title>
-</head>
-<body>
+<% layout('/layouts/boilerplate')%>
     <h1>Add a new skateground</h1>
     <form action="/skategrounds" method="POST">
         <div>
@@ -21,5 +13,3 @@
     <button type="submit">Add skateground</button>
     </form>
     <a href="/skategrounds">All Skategrounds</a>
-</body>
-</html>
