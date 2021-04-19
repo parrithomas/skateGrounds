@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Skateground</title>
+</head>
+<body>
+    <h1>Add a new skateground</h1>
+    <form action="/skategrounds" method="POST">
+        <div>
+            <label for="skateground[title]">Title</label>
+            <input type="text" name="skateground[title]">
+        </div>    
+        <div>
+            <label for="skateground[location]">Location</label>
+            <input type="text" name="skateground[location]">
+        </div>
+    
+    <button type="submit">Add skateground</button>
+    </form>
+    <a href="/skategrounds">All Skategrounds</a>
+</body>
+</html>

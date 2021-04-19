@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit <%=skateground.title%></title>
+</head>
+<body>
+    <h1>Edit <%=skateground.title%></h1>
+    <form action="/skategrounds/<%= skateground._id %>?_method=PUT" method="POST">
+        <div>
+            <label for="skateground[title]">Title</label>
+            <input type="text" name="skateground[title]" value="<%= skateground.title%>">
+        </div>    
+        <div>
+            <label for="skateground[location]">Location</label>
+            <input type="text" name="skateground[location]" value="<%= skateground.location%>">
+        </div>
+    
+    <button type="submit">Update Skateground</button>
+    </form>
+    <a href="/skategrounds/<%= skateground._id %>">Back to <%=skateground.title%></a>
+</body>
+</html>
