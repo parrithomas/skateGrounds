@@ -5,6 +5,8 @@
     <form
       action="/skategrounds/<%= skateground._id %>?_method=PUT"
       method="POST"
+      novalidate
+      class="validated-form"
     >
       <div class="mb-3">
         <label class="form-label" for="skateground[title]">Title</label>
@@ -13,6 +15,7 @@
           type="text"
           name="skateground[title]"
           value="<%=skateground.title%>"
+          required
         />
       </div>
       <div class="mb-3">
@@ -22,6 +25,7 @@
           type="text"
           name="skateground[location]"
           value="<%=skateground.location%>"
+          required
         />
       </div>
       <div class="mb-3">
@@ -33,6 +37,7 @@
           rows="4"
           id="description"
           name="skateground[description]"
+          required
         >
 <%=skateground.description%></textarea
         >
@@ -45,6 +50,7 @@
           id="image"
           name="skateground[image]"
           value="<%=skateground.image%>"
+          required
         />
       </div>
 
@@ -62,6 +68,7 @@
             step=".01"
             min="0"
             value="<%=skateground.price%>"
+            required
           />
         </div>
       </div>

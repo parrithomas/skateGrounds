@@ -2,14 +2,31 @@
 <div class="row">
   <h1 class="text-center">New SkateGround</h1>
   <div class="col-6 offset-3">
-    <form action="/skategrounds" method="POST">
+    <form
+      action="/skategrounds"
+      method="POST"
+      novalidate
+      class="validated-form"
+    >
       <div class="mb-3">
         <label class="form-label" for="skateground[title]">Title</label>
-        <input class="form-control" type="text" name="skateground[title]" />
+        <input
+          class="form-control"
+          type="text"
+          name="skateground[title]"
+          required
+        />
+        <div class="valid-feedback">Nailed it!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="skateground[location]">Location</label>
-        <input class="form-control" type="text" name="skateground[location]" />
+        <input
+          class="form-control"
+          type="text"
+          name="skateground[location]"
+          required
+        />
+        <div class="valid-feedback">Looks good.</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="skateground[location]"
@@ -20,7 +37,9 @@
           rows="4"
           id="description"
           name="skateground[description]"
+          required
         ></textarea>
+        <div class="valid-feedback">Cool</div>
       </div>
       <div class="mb-3">
         <label for="skateground[image]" class="form-label">Image URL</label>
@@ -29,7 +48,9 @@
           type="text"
           id="image"
           name="skateground[image]"
+          required
         />
+        <div class="valid-feedback">Nice.</div>
       </div>
 
       <div class="mb-3">
@@ -45,8 +66,10 @@
             placeholder="0.00"
             step=".01"
             min="0"
+            required
           />
         </div>
+        <div class="valid-feedback">Nailed it!</div>
       </div>
       <div class="mb-3">
         <button class="btn btn-success" type="submit">Add skateground</button>

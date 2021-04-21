@@ -1,0 +1,14 @@
+<% layout('/layouts/boilerplate')%>
+
+<div class="row">
+  <div class="col-6 offset-3">
+    <div class="alert alert-danger" role="alert">
+      <h4 class="alert-heading">SLAM!</h4>
+      <p></p>
+      <hr />
+      <h5 class="alert-heading"><%= err.statusCode %></h5>
+      <p class="mb-0"><%= err.message %></p>
+      <p class="mb-0"><%= err.stack %></p>
+    </div>
+  </div>
+</div>

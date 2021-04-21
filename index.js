@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const Skateground = require('./models/skateground')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
+const ExpressError = require('./utilities/ExpressError')
+const asyncWrapper = require('./utilities/asyncWrapper')
 
 // SETUP MONGOOSE
 mongoose.connect('mongodb://localhost:27017/skateGround', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
@@ -32,10 +34,10 @@ app.get('/', (req, res) => {
 })
 
 // all skategrounds
-app.get('/skategrounds', async (req, res) => {
+app.get('/skategrounds', asyncWrapper(async (req, res, next) => {
     const skategrounds = await Skateground.find({});
     res.render('skategrounds/index', { skategrounds });
-})
+}))
 
 // new skateground form
 app.get('/skategrounds/new', (req, res) => {
@@ -43,39 +45,51 @@ app.get('/skategrounds/new', (req, res) => {
 })
 
 // post new skateground form
-app.post('/skategrounds', async (req, res) => {
+app.post('/skategrounds', asyncWrapper(async (req, res, next) => {
     const skateground = new Skateground(req.body.skateground)
     await skateground.save();
     res.redirect(`/skategrounds/${skateground._id}`)
 
-})
+}))
 
 // get edit form
-app.get('/skategrounds/:id/edit', async (req, res) => {
+app.get('/skategrounds/:id/edit', asyncWrapper(async (req, res, next) => {
     const skateground = await Skateground.findById(req.params.id)
     res.render('skategrounds/edit', { skateground })
-})
+}))
 
 // PUT edit form
-app.put('/skategrounds/:id', async (req, res) => {
+app.put('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
     const { id } = req.params
     const skateground = await Skateground.findByIdAndUpdate(id, { ...req.body.skateground }) // destructure 
     res.redirect(`/skategrounds/${skateground._id}`);
-})
+
+}))
 
 // get one skateground
-app.get('/skategrounds/:id', async (req, res) => {
+app.get('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
     const skateground = await Skateground.findById(req.params.id)
     res.render('skategrounds/show', { skateground })
-})
+}))
 
 // Delete a skateground
-app.delete('/skategrounds/:id', async (req, res) => {
+app.delete('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
     const { id } = req.params;
     await Skateground.findByIdAndDelete(id);
     res.redirect('/skategrounds');
+}))
+
+// Error handling
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page not found', 404))
 })
 
+app.use((err, req, res, next) => {
+    const { statusCode = 500, message = 'Something went wrong' } = err;
+    res.status(statusCode).render('error', { err })
+
+})
 
 
 
