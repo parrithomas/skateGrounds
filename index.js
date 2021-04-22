@@ -8,6 +8,7 @@ const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const ExpressError = require('./utilities/ExpressError')
 const asyncWrapper = require('./utilities/asyncWrapper')
+const { skategroundSchema } = require('./schemas.js')
 
 // SETUP MONGOOSE
 mongoose.connect('mongodb://localhost:27017/skateGround', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
@@ -26,6 +27,15 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
+const validateSkateground = ((req, res, next) => {
+    const { error } = skategroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400)
+    } else {
+        next()
+    }
+})
 
 // ROUTES
 // index
@@ -45,7 +55,7 @@ app.get('/skategrounds/new', (req, res) => {
 })
 
 // post new skateground form
-app.post('/skategrounds', asyncWrapper(async (req, res, next) => {
+app.post('/skategrounds', validateSkateground, asyncWrapper(async (req, res, next) => {
     const skateground = new Skateground(req.body.skateground)
     await skateground.save();
     res.redirect(`/skategrounds/${skateground._id}`)
@@ -59,7 +69,7 @@ app.get('/skategrounds/:id/edit', asyncWrapper(async (req, res, next) => {
 }))
 
 // PUT edit form
-app.put('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
+app.put('/skategrounds/:id', validateSkateground, asyncWrapper(async (req, res, next) => {
     const { id } = req.params
     const skateground = await Skateground.findByIdAndUpdate(id, { ...req.body.skateground }) // destructure 
     res.redirect(`/skategrounds/${skateground._id}`);
