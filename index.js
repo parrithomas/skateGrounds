@@ -27,6 +27,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+mongoose.set('useFindAndModify', false);
 
 ///////////////////////////
 // VALIDATIONS ///////////
@@ -104,7 +105,6 @@ app.delete('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
 }))
 
 // post review
-
 app.post('/skategrounds/:id/reviews', validateReview, asyncWrapper(async (req, res) => {
     const skateground = await Skateground.findById(req.params.id);
     const review = new Review(req.body.review);
@@ -112,6 +112,14 @@ app.post('/skategrounds/:id/reviews', validateReview, asyncWrapper(async (req, r
     await review.save();
     await skateground.save();
     res.redirect(`/skategrounds/${skateground._id}`);
+}))
+
+// delete review
+app.delete('/skategrounds/:id/reviews/:reviewId', asyncWrapper(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Skateground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId)
+    res.redirect(`/skategrounds/${id}`)
 }))
 
 // Error handling

@@ -1,6 +1,7 @@
 // SETUP MONGOOSE
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Review = require('./review')
 
 const SkategroundSchema = new Schema({
     title: { type: String, required: true },
@@ -14,6 +15,17 @@ const SkategroundSchema = new Schema({
             ref: 'Review'
         }
     ]
+})
+
+///////////////////
+// MIDDLEWARE
+// delete all reviews when skateground deleted
+SkategroundSchema.post('findOneAndDelete', async function (skateground) {
+    if (skateground) {
+        await Review.deleteMany({
+            _id: { $in: skateground.reviews }
+        })
+    }
 })
 
 module.exports = mongoose.model('Skateground', SkategroundSchema);

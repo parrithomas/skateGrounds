@@ -1,6 +1,6 @@
 <% layout('/layouts/boilerplate')%>
 <div class="row">
-  <div class="col-6 offset-3">
+  <div class="col-6">
     <div class="card mb-3">
       <img
         src="<%= skateground.image %>"
@@ -35,6 +35,9 @@
         <div class="text-muted">Updated: 2 days ago</div>
       </div>
     </div>
+  </div>
+  <!-- end details div-->
+  <div class="col-6">
     <h2>Review the spot</h2>
     <form
       action="/skategrounds/<%=skateground._id%>/reviews"
@@ -43,6 +46,17 @@
       novalidate
     >
       <div class="mb-3">
+        <div class="">
+          <label for="rating" class="form-label" id="rating">Rating</label>
+          <input
+            type="range"
+            name="review[rating]"
+            id="rating"
+            min="1"
+            max="5"
+            class="form-range"
+          />
+        </div>
         <label for="review" class="form-label">Review</label>
         <textarea
           name="review[body]"
@@ -54,29 +68,30 @@
         ></textarea>
         <div class="valid-feedback">Nailed it</div>
       </div>
-      <div class="mb-3">
-        <label for="rating" class="form-label" id="rating">Rating</label>
-        <input
-          type="range"
-          name="review[rating]"
-          id="rating"
-          min="1"
-          max="5"
-          class="form-range"
-        />
-      </div>
 
       <button class="btn btn-success">Submit review</button>
     </form>
     <div class="mb-3">
       <% if(skateground.reviews.length){ %>
       <h3>Reviews</h3>
+
       <% for (let review of skateground.reviews){ %>
-      <div class="mb-2 p-3 bg-light">
-        <p><%= review.body %></p>
-        <b>Rating: <%= review.rating %>/5</b>
+      <div class="mb-2 p-3 bg-light row">
+        <div class="col-11">
+          <b class="mb-2 d-inline-block">Rating: <%= review.rating %>/5</b>
+          <p><%= review.body %></p>
+        </div>
+        <div class="col-1 d-flex justify-content-end align-items-end">
+          <form
+            action="/skategrounds/<%= skateground._id%>/reviews/<%=review._id%>?_method=DELETE"
+            method="post"
+          >
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+        </div>
       </div>
       <% } %> <% } %>
     </div>
   </div>
+  <!-- end review div-->
 </div>
