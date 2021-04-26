@@ -35,5 +35,48 @@
         <div class="text-muted">Updated: 2 days ago</div>
       </div>
     </div>
+    <h2>Review the spot</h2>
+    <form
+      action="/skategrounds/<%=skateground._id%>/reviews"
+      method="POST"
+      class="mb-3 validated-form"
+      novalidate
+    >
+      <div class="mb-3">
+        <label for="review" class="form-label">Review</label>
+        <textarea
+          name="review[body]"
+          id="body"
+          cols="30"
+          rows="3"
+          class="form-control"
+          required
+        ></textarea>
+        <div class="valid-feedback">Nailed it</div>
+      </div>
+      <div class="mb-3">
+        <label for="rating" class="form-label" id="rating">Rating</label>
+        <input
+          type="range"
+          name="review[rating]"
+          id="rating"
+          min="1"
+          max="5"
+          class="form-range"
+        />
+      </div>
+
+      <button class="btn btn-success">Submit review</button>
+    </form>
+    <div class="mb-3">
+      <% if(skateground.reviews.length){ %>
+      <h3>Reviews</h3>
+      <% for (let review of skateground.reviews){ %>
+      <div class="mb-2 p-3 bg-light">
+        <p><%= review.body %></p>
+        <b>Rating: <%= review.rating %>/5</b>
+      </div>
+      <% } %> <% } %>
+    </div>
   </div>
 </div>

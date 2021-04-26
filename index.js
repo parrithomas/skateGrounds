@@ -4,11 +4,12 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const Skateground = require('./models/skateground')
+const Review = require('./models/review')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const ExpressError = require('./utilities/ExpressError')
 const asyncWrapper = require('./utilities/asyncWrapper')
-const { skategroundSchema } = require('./schemas.js')
+const { skategroundSchema, reviewSchema } = require('./schemas.js')
 
 // SETUP MONGOOSE
 mongoose.connect('mongodb://localhost:27017/skateGround', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
@@ -27,8 +28,21 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
+///////////////////////////
+// VALIDATIONS ///////////
+/////////////////////////
 const validateSkateground = ((req, res, next) => {
     const { error } = skategroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400)
+    } else {
+        next()
+    }
+})
+
+const validateReview = ((req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
     if (error) {
         const msg = error.details.map(el => el.message).join(',');
         throw new ExpressError(msg, 400)
@@ -78,7 +92,7 @@ app.put('/skategrounds/:id', validateSkateground, asyncWrapper(async (req, res, 
 
 // get one skateground
 app.get('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
-    const skateground = await Skateground.findById(req.params.id)
+    const skateground = await Skateground.findById(req.params.id).populate('reviews')
     res.render('skategrounds/show', { skateground })
 }))
 
@@ -87,6 +101,17 @@ app.delete('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
     const { id } = req.params;
     await Skateground.findByIdAndDelete(id);
     res.redirect('/skategrounds');
+}))
+
+// post review
+
+app.post('/skategrounds/:id/reviews', validateReview, asyncWrapper(async (req, res) => {
+    const skateground = await Skateground.findById(req.params.id);
+    const review = new Review(req.body.review);
+    skateground.reviews.push(review);
+    await review.save();
+    await skateground.save();
+    res.redirect(`/skategrounds/${skateground._id}`);
 }))
 
 // Error handling

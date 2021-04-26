@@ -7,7 +7,13 @@ const SkategroundSchema = new Schema({
     image: { type: String, required: true },
     price: { type: Number, required: true },
     description: { type: String, required: true },
-    location: { type: String, required: true }
+    location: { type: String, required: true },
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Review'
+        }
+    ]
 })
 
 module.exports = mongoose.model('Skateground', SkategroundSchema);
