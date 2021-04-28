@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const ExpressError = require('./utilities/ExpressError')
+const session = require('express-session');
 
 // SETUP MONGOOSE
 mongoose.connect('mongodb://localhost:27017/skateGround',
@@ -30,6 +31,18 @@ app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 mongoose.set('useFindAndModify', false);
 app.use(express.static(path.join(__dirname, 'public')));
+const sessionConfig = {
+    secret: 'thisneedstobeabettersecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7, // date + 1 week (ms/s/m/h/d)
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    }
+}
+app.use(session(sessionConfig));
+
 
 // ROUTES
 const skategroundRoutes = require('./routes/skategrounds')
