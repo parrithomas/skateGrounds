@@ -1,7 +1,7 @@
 <% layout('/layouts/boilerplate')%>
 <h1>All Skategrounds</h1>
 <a class="btn btn-success mb-3" href="/skategrounds/new">Add Skateground</a>
-
+<%- include('../partials/flash.ejs')%>
 <div class="row row-cols-1 row-cols-md-3 g-4 mb-3">
   <% for (skateground of skategrounds){ %>
 

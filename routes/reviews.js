@@ -24,6 +24,7 @@ router.post('/', validateReview, asyncWrapper(async (req, res) => {
     skateground.reviews.push(review);
     await review.save();
     await skateground.save();
+    req.flash('review', '🤘 Thanks for your review 🤘')
     res.redirect(`/skategrounds/${skateground._id}`);
 }))
 
@@ -32,6 +33,7 @@ router.delete('/:reviewId', asyncWrapper(async (req, res) => {
     const { id, reviewId } = req.params;
     await Skateground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId)
+    req.flash('review', 'Review deleted.')
     res.redirect(`/skategrounds/${id}`)
 }))
 

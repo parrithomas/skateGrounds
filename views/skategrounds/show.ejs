@@ -1,6 +1,7 @@
 <% layout('/layouts/boilerplate')%>
 <div class="row">
   <div class="col-6">
+    <%- include('../partials/flash.ejs')%>
     <div class="card mb-3">
       <img
         src="<%= skateground.image %>"
@@ -74,7 +75,9 @@
     <div class="mb-3">
       <% if(skateground.reviews.length){ %>
       <h3>Reviews</h3>
-
+      <!-- new review flash -->
+      <%- include('../partials/flashReview.ejs')%>
+      <!-- reviews loop -->
       <% for (let review of skateground.reviews){ %>
       <div class="mb-2 p-3 bg-light row">
         <div class="col-11">
