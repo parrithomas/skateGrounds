@@ -3,16 +3,17 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
-const Skateground = require('./models/skateground')
-const Review = require('./models/review')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const ExpressError = require('./utilities/ExpressError')
-const asyncWrapper = require('./utilities/asyncWrapper')
-const { skategroundSchema, reviewSchema } = require('./schemas.js')
 
 // SETUP MONGOOSE
-mongoose.connect('mongodb://localhost:27017/skateGround', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true });
+mongoose.connect('mongodb://localhost:27017/skateGround',
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    });
 
 // is mongoose on?
 const db = mongoose.connection;
@@ -28,102 +29,22 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 mongoose.set('useFindAndModify', false);
-
-///////////////////////////
-// VALIDATIONS ///////////
-/////////////////////////
-const validateSkateground = ((req, res, next) => {
-    const { error } = skategroundSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400)
-    } else {
-        next()
-    }
-})
-
-const validateReview = ((req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400)
-    } else {
-        next()
-    }
-})
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTES
+const skategroundRoutes = require('./routes/skategrounds')
+app.use('/skategrounds', skategroundRoutes);
+
+const reviewRoutes = require('./routes/reviews')
+app.use('/skategrounds/:id/reviews', reviewRoutes);
+
 // index
-app.get('/', (req, res) => {
-    res.render('home')
-})
+// router.get('/', (req, res) => {
+//     res.render('home')
+// })
 
-// all skategrounds
-app.get('/skategrounds', asyncWrapper(async (req, res, next) => {
-    const skategrounds = await Skateground.find({});
-    res.render('skategrounds/index', { skategrounds });
-}))
-
-// new skateground form
-app.get('/skategrounds/new', (req, res) => {
-    res.render('skategrounds/new');
-})
-
-// post new skateground form
-app.post('/skategrounds', validateSkateground, asyncWrapper(async (req, res, next) => {
-    const skateground = new Skateground(req.body.skateground)
-    await skateground.save();
-    res.redirect(`/skategrounds/${skateground._id}`)
-
-}))
-
-// get edit form
-app.get('/skategrounds/:id/edit', asyncWrapper(async (req, res, next) => {
-    const skateground = await Skateground.findById(req.params.id)
-    res.render('skategrounds/edit', { skateground })
-}))
-
-// PUT edit form
-app.put('/skategrounds/:id', validateSkateground, asyncWrapper(async (req, res, next) => {
-    const { id } = req.params
-    const skateground = await Skateground.findByIdAndUpdate(id, { ...req.body.skateground }) // destructure 
-    res.redirect(`/skategrounds/${skateground._id}`);
-
-}))
-
-// get one skateground
-app.get('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
-    const skateground = await Skateground.findById(req.params.id).populate('reviews')
-    res.render('skategrounds/show', { skateground })
-}))
-
-// Delete a skateground
-app.delete('/skategrounds/:id', asyncWrapper(async (req, res, next) => {
-    const { id } = req.params;
-    await Skateground.findByIdAndDelete(id);
-    res.redirect('/skategrounds');
-}))
-
-// post review
-app.post('/skategrounds/:id/reviews', validateReview, asyncWrapper(async (req, res) => {
-    const skateground = await Skateground.findById(req.params.id);
-    const review = new Review(req.body.review);
-    skateground.reviews.push(review);
-    await review.save();
-    await skateground.save();
-    res.redirect(`/skategrounds/${skateground._id}`);
-}))
-
-// delete review
-app.delete('/skategrounds/:id/reviews/:reviewId', asyncWrapper(async (req, res) => {
-    const { id, reviewId } = req.params;
-    await Skateground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId)
-    res.redirect(`/skategrounds/${id}`)
-}))
 
 // Error handling
-
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page not found', 404))
 })
@@ -133,9 +54,6 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err })
 
 })
-
-
-
 
 // START LISTENING
 app.listen(3000, () => console.log('SERVER ON PORT 3000'))
