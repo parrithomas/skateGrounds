@@ -1,8 +1,6 @@
 <% if (success && success.length){ %>
 <div class="alert alert-success alert-dismissible fade show" role="alert">
-  <h4 class="alert-heading">Right on!</h4>
-  <hr />
-  <p><%= success %></p>
+  <%= success %>
   <button
     type="button"
     class="btn-close"
@@ -14,8 +12,9 @@
 
 <!-- error partial -->
 <% if (error && error.length){ %>
-<div class="alert alert-danger alert-dismissible fade show" role="alert">
-  <p><%= error %></p>
+<div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+  <h4 class="alert-heading">SLAM!</h4>
+  <%= error %>
   <button
     type="button"
     class="btn-close"

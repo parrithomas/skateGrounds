@@ -6,6 +6,7 @@ const Skateground = require('../models/skateground')
 const { skategroundSchema } = require('../schemas.js')
 const ExpressError = require('../utilities/ExpressError')
 const flash = require('connect-flash');
+const { loginCheck } = require('../utilities/middleware')
 
 ///////////////////////////
 // VALIDATIONS ///////////
@@ -21,7 +22,6 @@ const validateSkateground = ((req, res, next) => {
 })
 
 
-
 ///////////////////////
 //////  ROUTES  //////
 
@@ -32,12 +32,12 @@ router.get('/', asyncWrapper(async (req, res, next) => {
 }))
 
 // new skateground form
-router.get('/new', (req, res) => {
+router.get('/new', loginCheck, (req, res) => {
     res.render('skategrounds/new');
 })
 
 // post new skateground form
-router.post('/', validateSkateground, asyncWrapper(async (req, res, next) => {
+router.post('/', loginCheck, validateSkateground, asyncWrapper(async (req, res, next) => {
     const skateground = new Skateground(req.body.skateground)
     await skateground.save();
     req.flash('success', '🛹 New Skateground created! 🛹');
@@ -46,7 +46,8 @@ router.post('/', validateSkateground, asyncWrapper(async (req, res, next) => {
 }))
 
 // get edit form
-router.get('/:id/edit', asyncWrapper(async (req, res, next) => {
+router.get('/:id/edit', loginCheck, asyncWrapper(async (req, res, next) => {
+
     const skateground = await Skateground.findById(req.params.id)
     if (!skateground) {
         req.flash('error', `Couldn't find the Skateground you're looking for ¯\_(ツ)_/¯`);
@@ -56,7 +57,7 @@ router.get('/:id/edit', asyncWrapper(async (req, res, next) => {
 }))
 
 // PUT edit form
-router.put('/:id', validateSkateground, asyncWrapper(async (req, res, next) => {
+router.put('/:id', loginCheck, validateSkateground, asyncWrapper(async (req, res, next) => {
     const { id } = req.params
     const skateground = await Skateground.findByIdAndUpdate(id, { ...req.body.skateground }) // destructure 
     req.flash('success', '🛹 Skateground Updated! 🛹')
@@ -75,7 +76,7 @@ router.get('/:id', asyncWrapper(async (req, res, next) => {
 }))
 
 // Delete a skateground
-router.delete('/:id', asyncWrapper(async (req, res, next) => {
+router.delete('/:id', loginCheck, asyncWrapper(async (req, res, next) => {
     const { id } = req.params;
     const skateground = await Skateground.findByIdAndDelete(id);
     req.flash('success', `🖕 ${skateground.title} deleted 🖕`)

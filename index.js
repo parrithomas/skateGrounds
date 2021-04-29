@@ -53,7 +53,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser())
-passport.serializeUser(User.deserializeUser())
+passport.deserializeUser(User.deserializeUser())
 
 // flash messages
 app.use((req, res, next) => {
@@ -66,20 +66,23 @@ app.use((req, res, next) => {
 // ROUTES
 const skategroundRoutes = require('./routes/skategrounds')
 app.use('/skategrounds', skategroundRoutes);
-
 const reviewRoutes = require('./routes/reviews')
 app.use('/skategrounds/:id/reviews', reviewRoutes);
+const userRoutes = require('./routes/users')
+app.use('/', userRoutes);
 
 // index
-// router.get('/', (req, res) => {
-//     res.render('home')
-// })
+app.get('/', (req, res) => {
+    res.send('sk8rboi')
+})
 
 app.get('/fakeuser', async (req, res) => {
     const user = new User({ email: 'parri@gmail.com', username: 'pazza' });
     const newUser = await User.register(user, 'monkey');
     res.send(newUser)
 })
+
+
 
 // Error handling
 app.all('*', (req, res, next) => {
