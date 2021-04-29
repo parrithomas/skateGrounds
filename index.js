@@ -8,6 +8,9 @@ const ejsMate = require('ejs-mate')
 const ExpressError = require('./utilities/ExpressError')
 const session = require('express-session');
 const flash = require('connect-flash')
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
 // SETUP MONGOOSE
 mongoose.connect('mongodb://localhost:27017/skateGround',
@@ -24,14 +27,7 @@ db.once('open', () => {
     console.log('DATABASE IS CONNECTED');
 })
 
-// SETUP EJS AND MIDDLEWARE
-app.engine('ejs', ejsMate);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: true }))
-app.use(methodOverride('_method'))
-mongoose.set('useFindAndModify', false);
-app.use(express.static(path.join(__dirname, 'public')));
+// Session Config
 const sessionConfig = {
     secret: 'thisneedstobeabettersecret',
     resave: false,
@@ -43,10 +39,23 @@ const sessionConfig = {
     }
 }
 
-// setup flash messages
+// SETUP EJS AND MIDDLEWARE
+app.engine('ejs', ejsMate);
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+mongoose.set('useFindAndModify', false);
+app.use(express.urlencoded({ extended: true }))
+app.use(methodOverride('_method'))
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser())
+passport.serializeUser(User.deserializeUser())
 
+// flash messages
 app.use((req, res, next) => {
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
@@ -66,6 +75,11 @@ app.use('/skategrounds/:id/reviews', reviewRoutes);
 //     res.render('home')
 // })
 
+app.get('/fakeuser', async (req, res) => {
+    const user = new User({ email: 'parri@gmail.com', username: 'pazza' });
+    const newUser = await User.register(user, 'monkey');
+    res.send(newUser)
+})
 
 // Error handling
 app.all('*', (req, res, next) => {
