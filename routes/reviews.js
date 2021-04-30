@@ -3,19 +3,9 @@ const router = express.Router({ mergeParams: true }); // mergeParams to get para
 const asyncWrapper = require('../utilities/asyncWrapper')
 const Skateground = require('../models/skateground')
 const Review = require('../models/review')
-const { reviewSchema } = require('../schemas.js')
-const ExpressError = require('../utilities/ExpressError')
 
 // VALIDATIONS
-const validateReview = ((req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400)
-    } else {
-        next()
-    }
-})
+const { validateReview } = require('../utilities/middleware')
 
 // post review
 router.post('/', validateReview, asyncWrapper(async (req, res) => {

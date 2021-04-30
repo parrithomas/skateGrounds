@@ -1,3 +1,7 @@
+const Skateground = require("../models/skateground");
+const ExpressError = require('../utilities/ExpressError')
+const { skategroundSchema, reviewSchema } = require('../schemas.js')
+
 module.exports.loginCheck = function (req, res, next) {
     if (!req.isAuthenticated()) {
         req.session.returnTo = req.originalUrl
@@ -6,3 +10,32 @@ module.exports.loginCheck = function (req, res, next) {
     } next()
 }
 
+module.exports.validateSkateground = ((req, res, next) => {
+    const { error } = skategroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400)
+    } else {
+        next()
+    }
+})
+
+module.exports.isOwner = async (req, res, next) => {
+    const { id } = req.params;
+    const skateground = await Skateground.findById(id)
+    if (!skateground.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do that.');
+        return res.redirect(`/skategrounds/${id}`)
+    }
+    next();
+}
+
+module.exports.validateReview = ((req, res, next) => {
+    const { error } = reviewSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400)
+    } else {
+        next()
+    }
+})

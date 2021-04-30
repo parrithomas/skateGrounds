@@ -16,6 +16,12 @@
       <ul class="list-group list-group-flush">
         <li class="list-group-item">Price: £<%= skateground.price %></li>
       </ul>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item text-muted">
+          <h6 class="mb-0">Added by: <%= skateground.author.username %></h6>
+        </li>
+      </ul>
+      <% if (currentUser && skateground.author.equals(currentUser._id)){ %>
       <div class="card-body">
         <a
           href="/skategrounds/<%=skateground._id%>/edit"
@@ -32,6 +38,7 @@
           </button>
         </form>
       </div>
+      <% } %>
       <div class="card-footer">
         <div class="text-muted">Updated: 2 days ago</div>
       </div>
