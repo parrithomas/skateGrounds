@@ -45,7 +45,9 @@
     </div>
   </div>
   <!-- end details div-->
+
   <div class="col-6">
+    <% if(currentUser){ %>
     <h2>Review the spot</h2>
     <form
       action="/skategrounds/<%=skateground._id%>/reviews"
@@ -79,8 +81,16 @@
 
       <button class="btn btn-success">Submit review</button>
     </form>
+    <% } %>
     <div class="mb-3">
-      <% if(skateground.reviews.length){ %>
+      <% if(!currentUser) {%>
+      <div class="mb-3 p-3 row border border-info">
+        <div class="col">
+          <a href="/login" class="link-dark">Login</a> or
+          <a href="/register" class="link-dark">register</a> to leave a review.
+        </div>
+      </div>
+      <% } %> <% if(skateground.reviews.length){ %>
       <h3>Reviews</h3>
       <!-- new review flash -->
       <%- include('../partials/flashReview.ejs')%>
@@ -88,9 +98,13 @@
       <% for (let review of skateground.reviews){ %>
       <div class="mb-2 p-3 bg-light row">
         <div class="col-11">
+          <h6 class="text-muted card-subtitle">
+            <%= review.author.username %>
+          </h6>
           <b class="mb-2 d-inline-block">Rating: <%= review.rating %>/5</b>
           <p><%= review.body %></p>
         </div>
+        <% if (currentUser && review.author.equals(currentUser._id)){ %>
         <div class="col-1 d-flex justify-content-end align-items-end">
           <form
             action="/skategrounds/<%= skateground._id%>/reviews/<%=review._id%>?_method=DELETE"
@@ -99,9 +113,11 @@
             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
           </form>
         </div>
+        <% } %>
       </div>
       <% } %> <% } %>
     </div>
   </div>
+
   <!-- end review div-->
 </div>

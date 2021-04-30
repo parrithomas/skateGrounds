@@ -1,4 +1,5 @@
 const Skateground = require("../models/skateground");
+const Review = require("../models/review");
 const ExpressError = require('../utilities/ExpressError')
 const { skategroundSchema, reviewSchema } = require('../schemas.js')
 
@@ -24,6 +25,16 @@ module.exports.isOwner = async (req, res, next) => {
     const { id } = req.params;
     const skateground = await Skateground.findById(id)
     if (!skateground.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do that.');
+        return res.redirect(`/skategrounds/${id}`)
+    }
+    next();
+}
+
+module.exports.isReviewOwner = async (req, res, next) => {
+    const { id, reviewId } = req.params;
+    const review = await Review.findById(reviewId)
+    if (!review.author.equals(req.user._id)) {
         req.flash('error', 'You do not have permission to do that.');
         return res.redirect(`/skategrounds/${id}`)
     }

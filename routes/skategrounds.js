@@ -58,11 +58,17 @@ router.put('/:id', loginCheck, isOwner, validateSkateground, asyncWrapper(async 
 
 // get one skateground
 router.get('/:id', asyncWrapper(async (req, res, next) => {
-    const skateground = await Skateground.findById(req.params.id).populate('reviews').populate('author')
+    const skateground = await Skateground.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author')
     if (!skateground) {
         req.flash('error', `Couldn't find the Skateground you're looking for ¯\_(ツ)_/¯`);
         return res.redirect('/skategrounds');
     }
+    console.log(skateground)
     res.render('skategrounds/show', { skateground })
 }))
 

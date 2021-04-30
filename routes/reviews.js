@@ -5,12 +5,13 @@ const Skateground = require('../models/skateground')
 const Review = require('../models/review')
 
 // VALIDATIONS
-const { validateReview } = require('../utilities/middleware')
+const { validateReview, loginCheck, isReviewOwner } = require('../utilities/middleware')
 
 // post review
-router.post('/', validateReview, asyncWrapper(async (req, res) => {
+router.post('/', loginCheck, validateReview, asyncWrapper(async (req, res) => {
     const skateground = await Skateground.findById(req.params.id); //  this will fail without the mergeParams option up top
     const review = new Review(req.body.review);
+    review.author = req.user._id;
     skateground.reviews.push(review);
     await review.save();
     await skateground.save();
@@ -19,7 +20,7 @@ router.post('/', validateReview, asyncWrapper(async (req, res) => {
 }))
 
 // delete review
-router.delete('/:reviewId', asyncWrapper(async (req, res) => {
+router.delete('/:reviewId', loginCheck, isReviewOwner, asyncWrapper(async (req, res) => {
     const { id, reviewId } = req.params;
     await Skateground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId)
