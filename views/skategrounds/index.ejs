@@ -7,7 +7,12 @@
 
   <div class="col">
     <div class="card h-100">
-      <img src="<%= skateground.image%>" class="card-img-top" alt="skatepark" />
+      <a href="/skategrounds/<%= skateground._id %>"
+        ><img
+          src="<%= skateground.image%>"
+          class="card-img-top"
+          alt="skatepark"
+      /></a>
       <div class="card-body">
         <h5 class="card-title"><%=skateground.title%></h5>
 

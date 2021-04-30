@@ -17,7 +17,7 @@ router.post('/register', asyncWrapper(async (req, res, next) => {
         req.login(newUser, err => {
             if (err) return next(err);
         });
-        req.flash('success', `Sick, you're all signed up for SkateGrounds. Happy skating.`)
+        req.flash('success', `Nice one, ${req.user.username}, you're all signed up for SkateGrounds. Happy skating.`)
         res.redirect('/skategrounds');
     } catch (e) {
         req.flash('error', e.message);
@@ -30,7 +30,7 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/login', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), (async (req, res) => {
-    req.flash('success', `You're logged in.`)
+    req.flash('success', `You're logged in, ${req.user.username}`)
     const redirectURL = req.session.returnTo || '/skategrounds'
     delete req.session.returnTo;
     res.redirect(redirectURL)
