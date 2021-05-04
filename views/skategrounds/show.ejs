@@ -1,4 +1,5 @@
 <% layout('/layouts/boilerplate')%>
+<link rel="stylesheet" href="/styles/stars.css" />
 <div class="row">
   <div class="col-6">
     <%- include('../partials/flash.ejs')%>
@@ -56,17 +57,6 @@
       novalidate
     >
       <div class="mb-3">
-        <div class="">
-          <label for="rating" class="form-label" id="rating">Rating</label>
-          <input
-            type="range"
-            name="review[rating]"
-            id="rating"
-            min="1"
-            max="5"
-            class="form-range"
-          />
-        </div>
         <label for="review" class="form-label">Review</label>
         <textarea
           name="review[body]"
@@ -78,7 +68,27 @@
         ></textarea>
         <div class="valid-feedback">Nailed it</div>
       </div>
-
+      <fieldset class="starability-basic">
+        <input
+          type="radio"
+          id="no-rate"
+          class="input-no-rate"
+          name="review[rating]"
+          value="1"
+          checked
+          aria-label="No rating."
+        />
+        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+        <label for="first-rate1" title="Terrible">1 star</label>
+        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+        <label for="first-rate2" title="Not good">2 stars</label>
+        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+        <label for="first-rate3" title="Average">3 stars</label>
+        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+        <label for="first-rate4" title="Very good">4 stars</label>
+        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+        <label for="first-rate5" title="Amazing">5 stars</label>
+      </fieldset>
       <button class="btn btn-success">Submit review</button>
     </form>
     <% } %>
@@ -101,7 +111,9 @@
           <h6 class="text-muted card-subtitle">
             <%= review.author.username %>
           </h6>
-          <b class="mb-2 d-inline-block">Rating: <%= review.rating %>/5</b>
+          <p class="starability-result" data-rating="<%=review.rating%>">
+            Rated: <%=review.rating%>
+          </p>
           <p><%= review.body %></p>
         </div>
         <% if (currentUser && review.author.equals(currentUser._id)){ %>
