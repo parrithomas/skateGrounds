@@ -3,29 +3,15 @@ const router = express.Router({ mergeParams: true }); // mergeParams to get para
 const asyncWrapper = require('../utilities/asyncWrapper')
 const Skateground = require('../models/skateground')
 const Review = require('../models/review')
+const reviews = require('../controllers/reviews')
 
 // VALIDATIONS
 const { validateReview, loginCheck, isReviewOwner } = require('../utilities/middleware')
 
 // post review
-router.post('/', loginCheck, validateReview, asyncWrapper(async (req, res) => {
-    const skateground = await Skateground.findById(req.params.id); //  this will fail without the mergeParams option up top
-    const review = new Review(req.body.review);
-    review.author = req.user._id;
-    skateground.reviews.push(review);
-    await review.save();
-    await skateground.save();
-    req.flash('review', '🤘 Thanks for your review 🤘')
-    res.redirect(`/skategrounds/${skateground._id}`);
-}))
+router.post('/', loginCheck, validateReview, asyncWrapper(reviews.postReview))
 
 // delete review
-router.delete('/:reviewId', loginCheck, isReviewOwner, asyncWrapper(async (req, res) => {
-    const { id, reviewId } = req.params;
-    await Skateground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
-    await Review.findByIdAndDelete(reviewId)
-    req.flash('review', 'Review deleted.')
-    res.redirect(`/skategrounds/${id}`)
-}))
+router.delete('/:reviewId', loginCheck, isReviewOwner, asyncWrapper(reviews.deleteReview))
 
 module.exports = router;
